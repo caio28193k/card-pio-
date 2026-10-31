@@ -128,7 +128,9 @@ export function Cardapio({ restaurant: r }: { restaurant: Restaurant }) {
 
   const addButton = (p: Product) => ordering && <button type="button" className="cdp-add" onClick={(event) => { event.stopPropagation(); setDetail(p); }} aria-label={`Adicionar ${p.name}`}><Plus size={16} /> Adicionar</button>;
 
-  return <div className="cdp" style={style}>
+  const hasBottomButton = Boolean(whatsappHref || (ordering && (count > 0 || r.demo)));
+
+  return <div className={`cdp ${hasBottomButton ? "has-bottom-button" : ""}`} style={style}>
     {r.demo && <div className="cdp-strip"><span className="cdp-dot" /> Cardápio de demonstração <span className="cdp-strip-detail">· marca, fotos e preços ilustrativos</span></div>}
 
     <header className="cdp-header"><div className="cdp-container cdp-header-inner">
@@ -226,7 +228,7 @@ export function Cardapio({ restaurant: r }: { restaurant: Restaurant }) {
       </button>
       : whatsappHref
         ? <a className="cdp-wa" href={whatsappHref} target="_blank" rel="noreferrer"><MessageCircle size={20} /> {ordering ? "Falar no WhatsApp" : "Pedir no WhatsApp"}</a>
-        : <button type="button" className="cdp-wa" onClick={() => setToast(ordering ? "Adicione itens para montar o pedido. No cardápio de verdade, este botão abre o WhatsApp do restaurante." : "No cardápio de verdade, este botão abre o WhatsApp do restaurante com a mensagem pronta.")}><MessageCircle size={20} /> {ordering ? "Falar no WhatsApp" : "Pedir no WhatsApp"}</button>}
+        : r.demo && ordering && <button type="button" className="cdp-wa" onClick={() => setToast("Adicione itens para montar o pedido. No cardápio de verdade, este botão abre o WhatsApp do restaurante.")}><MessageCircle size={20} /> Falar no WhatsApp</button>}
 
     {toast && <div className="cdp-toast" role="status">{toast}</div>}
 
