@@ -12,6 +12,7 @@ Cada restaurante é um arquivo de dados.
 |---|---|
 | `/` ou `/hamburgueria` | Demo Brasa 47 (hamburgueria) |
 | `/pizzaria` | Demo Lenha 21 (pizzaria, lista compacta, sem fotos) |
+| `/mesa` | Demo Brasa 47 só de consulta (salão / QR code), sem carrinho |
 
 Qualquer caminho desconhecido abre a demo da hamburgueria.
 
@@ -33,7 +34,7 @@ Qualquer caminho desconhecido abre a demo da hamburgueria.
 3. Coloque as fotos em `public/<nome>/` e aponte em `photo: "/<nome>/arquivo.webp"`. Produto sem `photo` aparece só com texto.
 4. Importe o arquivo em `src/clientes/index.ts` e adicione na lista `restaurants`.
 
-Sem número de WhatsApp (`whatsapp: ""`), o envio do pedido mostra uma prévia da mensagem na tela em vez de abrir o WhatsApp. É assim que as demos funcionam.
+Sem número de WhatsApp, o botão do WhatsApp não aparece. Nas demos com carrinho, o envio do pedido mostra uma prévia da mensagem na tela em vez de abrir o WhatsApp. É assim que as demos funcionam.
 
 O nome de `category` em cada produto precisa ser igual a um `name` em `categories`. Se não for, o produto não aparece.
 

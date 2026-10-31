@@ -1,12 +1,13 @@
 import type { Restaurant } from "../types";
 import brasa47 from "./brasa47";
+import brasa47Mesa from "./brasa47-mesa";
 import lenha21 from "./lenha21";
 
 /**
  * Cada cardápio fica em seusite.com/<slug>.
  * Para um cliente novo: copie um arquivo desta pasta, troque os dados e adicione aqui.
  */
-export const restaurants: Restaurant[] = [brasa47, lenha21];
+export const restaurants: Restaurant[] = [brasa47, lenha21, brasa47Mesa];
 
 /** Página aberta em seusite.com/ (sem caminho). */
 export const defaultRestaurant = brasa47;

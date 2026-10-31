@@ -1,6 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap");
 
-.cdp{--bg:#000;--surface:#0b0b0b;--ink:#f7f3ec;--muted:#bdb4a6;--line:#262626;--header:60px;background:var(--bg);color:var(--ink);font-family:Manrope,Arial,sans-serif;min-height:100vh;padding-bottom:96px}
+.cdp{--bg:#000;--surface:#0b0b0b;--ink:#f7f3ec;--muted:#bdb4a6;--line:#262626;--header:60px;background:var(--bg);color:var(--ink);font-family:Manrope,Arial,sans-serif;min-height:100vh;padding-bottom:16px}
+.cdp.has-bottom-button{padding-bottom:96px}
 .cdp *{box-sizing:border-box}
 .cdp :is(button,input){font:inherit}
 .cdp button{cursor:pointer}
@@ -171,7 +172,8 @@
 .cdp-bubble p{margin:0;overflow-wrap:anywhere}
 
 @media(min-width:720px){
-  .cdp{--header:68px;padding-bottom:40px}
+  .cdp{--header:68px}
+  .cdp.has-bottom-button{padding-bottom:40px}
   .cdp-container{width:min(100% - 48px,1100px)}
   .cdp-logo{font-size:30px}
   .cdp-hero-content{padding-block:64px 44px}
