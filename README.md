@@ -1,6 +1,6 @@
 # Brasa 47 — Cardápio de demonstração
 
-Página de cardápio responsiva com busca, filtros por categoria, fotos grandes, descrições completas e preços sempre visíveis. No celular, cada produto ocupa uma linha.
+Página de cardápio responsiva em tema escuro, com busca, filtros por categoria, fotos grandes, descrições completas e preços sempre visíveis. No celular, cada produto ocupa uma linha.
 Conteúdo ilustrativo. O projeto é uma página de consulta, sem carrinho, pedidos, login ou banco de dados.
 
 ## Executar
