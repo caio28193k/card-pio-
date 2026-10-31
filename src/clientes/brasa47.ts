@@ -1,4 +1,15 @@
-import type { Restaurant } from "../types";
+import type { AddonGroup, Restaurant } from "../types";
+
+const adicionais: AddonGroup = {
+  id: "adicionais",
+  name: "Adicionais",
+  options: [
+    { id: "bacon", name: "Bacon", price: 500 },
+    { id: "cheddar", name: "Cheddar extra", price: 400 },
+    { id: "ovo", name: "Ovo", price: 300 },
+    { id: "blend", name: "Blend extra 160g", price: 900 },
+  ],
+};
 
 const brasa47: Restaurant = {
   slug: "hamburgueria",
@@ -7,6 +18,7 @@ const brasa47: Restaurant = {
   kicker: "Hamburgueria artesanal",
   tagline: "Pão macio, carne suculenta e cheddar derretendo.",
   heroImage: "/brasa-hero.webp",
+  layout: "fotos",
   theme: { accent: "#ffc400", accentInk: "#000000" },
   whatsapp: "",
   whatsappMessage: "Olá! Vi o cardápio e quero fazer um pedido.",
@@ -14,12 +26,17 @@ const brasa47: Restaurant = {
   address: "Rua Exemplo, 47 · Centro",
   hours: [{ days: [2, 3, 4, 5, 6, 0], open: "11:00", close: "23:30" }],
   payments: ["Pix", "Crédito", "Débito", "Dinheiro"],
-  delivery: "Entrega e retirada no balcão. Taxa conforme o bairro.",
+  delivery: "Entrega na região central. Retirada no balcão.",
+  ordering: { deliveryFee: 600, pickup: true, payments: ["Pix", "Cartão na entrega", "Dinheiro"] },
   description: "Cardápio de demonstração Brasa 47. Burgers, combos, acompanhamentos e bebidas com fotos, ingredientes e preços.",
   demo: true,
   categories: [
-    { name: "Burgers" },
-    { name: "Combos", note: "Acompanha fritas individuais e refrigerante lata." },
+    { name: "Burgers", addonGroups: [adicionais] },
+    {
+      name: "Combos",
+      note: "Acompanha fritas individuais e refrigerante lata.",
+      addonGroups: [adicionais, { id: "troca", name: "Trocar acompanhamento", single: true, options: [{ id: "onion", name: "Onion rings no lugar das fritas", price: 400 }] }],
+    },
     { name: "Acompanhamentos" },
     { name: "Bebidas" },
   ],

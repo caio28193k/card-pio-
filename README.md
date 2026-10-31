@@ -1,14 +1,17 @@
 # Cardápio digital
 
-Cardápio de consulta para restaurantes: tema escuro, busca, filtros por categoria, preços por tamanho (pizza), foto ampliável, horário com "Aberto agora", informações da loja e botão fixo "Pedir no WhatsApp".
-Não tem carrinho, login nem banco de dados. Cada restaurante é um arquivo de dados.
+Cardápio digital para restaurantes: tema escuro, busca, filtros por categoria, preços por tamanho (pizza), horário com "Aberto agora", informações da loja e WhatsApp.
+
+Com `ordering` ligado, vira cardápio com **carrinho que envia o pedido pronto para o WhatsApp**: tamanhos, meio a meio, adicionais com preço, observação, quantidade, entrega (taxa fixa) ou retirada, pagamento e troco. Não tem login, banco de dados nem pagamento online. O carrinho e os dados do cliente ficam salvos no navegador dele.
+
+Cada restaurante é um arquivo de dados.
 
 ## Endereços
 
 | Caminho | Página |
 |---|---|
 | `/` ou `/hamburgueria` | Demo Brasa 47 (hamburgueria) |
-| `/pizzaria` | Demo Lenha 21 (pizzaria, sem fotos) |
+| `/pizzaria` | Demo Lenha 21 (pizzaria, lista compacta, sem fotos) |
 
 Qualquer caminho desconhecido abre a demo da hamburgueria.
 
@@ -22,9 +25,15 @@ Qualquer caminho desconhecido abre a demo da hamburgueria.
    - `whatsapp`: só números, com 55 + DDD (ex.: `5511999998888`).
    - `instagram`, `address`, `hours`, `payments`, `delivery`.
    - `categories` e `products`. Preços em **centavos** (`3290` = R$ 32,90). Pizza: `price: [{ label: "Broto", price: 3990 }, ...]`.
+   - `layout`: `"fotos"` (fotos grandes, bom para cardápio curto com fotos boas) ou `"lista"` (lista compacta, bom para cardápio longo).
+   - `ordering` (opcional, liga o carrinho): `deliveryFee` em centavos, `pickup: true` para permitir retirada, `payments` com as formas aceitas (a opção `"Dinheiro"` pede o troco). Sem `ordering`, a página é só cardápio.
+   - Adicionais: `addonGroups` na categoria (vale para todos os produtos dela) ou no produto. `single: true` = escolhe no máximo um (ex.: borda).
+   - Meio a meio: `halfAndHalf: "salgadas"` na categoria. Categorias com o mesmo valor se misturam; o preço é o do sabor mais caro no tamanho escolhido.
    - Apague `demo: true` (tira a faixa de demonstração e ativa os links de Instagram e mapa).
 3. Coloque as fotos em `public/<nome>/` e aponte em `photo: "/<nome>/arquivo.webp"`. Produto sem `photo` aparece só com texto.
 4. Importe o arquivo em `src/clientes/index.ts` e adicione na lista `restaurants`.
+
+Sem número de WhatsApp (`whatsapp: ""`), o envio do pedido mostra uma prévia da mensagem na tela em vez de abrir o WhatsApp. É assim que as demos funcionam.
 
 O nome de `category` em cada produto precisa ser igual a um `name` em `categories`. Se não for, o produto não aparece.
 
