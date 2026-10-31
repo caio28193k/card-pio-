@@ -1,6 +1,7 @@
 import { createRoot } from "react-dom/client";
-import { BurgerDemo } from "./BurgerDemo";
+import { Cardapio } from "./Cardapio";
+import { findRestaurant } from "./clientes";
 import "./base.css";
-import "./burger-demo.css";
+import "./cardapio.css";
 
-createRoot(document.getElementById("root")!).render(<BurgerDemo />);
+createRoot(document.getElementById("root")!).render(<Cardapio restaurant={findRestaurant(window.location.pathname)} />);
