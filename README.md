@@ -1,7 +1,34 @@
-# Brasa 47 — Cardápio de demonstração
+# Cardápio digital
 
-Página de cardápio responsiva em tema escuro, com busca, filtros por categoria, fotos grandes, descrições completas e preços sempre visíveis. No celular, cada produto ocupa uma linha.
-Conteúdo ilustrativo. O projeto é uma página de consulta, sem carrinho, pedidos, login ou banco de dados.
+Cardápio de consulta para restaurantes: tema escuro, busca, filtros por categoria, preços por tamanho (pizza), foto ampliável, horário com "Aberto agora", informações da loja e botão fixo "Pedir no WhatsApp".
+Não tem carrinho, login nem banco de dados. Cada restaurante é um arquivo de dados.
+
+## Endereços
+
+| Caminho | Página |
+|---|---|
+| `/` ou `/hamburgueria` | Demo Brasa 47 (hamburgueria) |
+| `/pizzaria` | Demo Lenha 21 (pizzaria, sem fotos) |
+
+Qualquer caminho desconhecido abre a demo da hamburgueria.
+
+## Criar o cardápio de um cliente
+
+1. Copie `src/clientes/brasa47.ts` (ou `lenha21.ts` para pizzaria) para `src/clientes/<nome>.ts`.
+2. Troque os dados:
+   - `slug`: o caminho da página (ex.: `donna` → `seusite.com/donna`).
+   - `logo`, `kicker`, `tagline`, `heroImage`.
+   - `theme.accent` (cor da marca) e `theme.accentInk` (cor do texto sobre ela; preto ou branco, o que tiver mais contraste).
+   - `whatsapp`: só números, com 55 + DDD (ex.: `5511999998888`).
+   - `instagram`, `address`, `hours`, `payments`, `delivery`.
+   - `categories` e `products`. Preços em **centavos** (`3290` = R$ 32,90). Pizza: `price: [{ label: "Broto", price: 3990 }, ...]`.
+   - Apague `demo: true` (tira a faixa de demonstração e ativa os links de Instagram e mapa).
+3. Coloque as fotos em `public/<nome>/` e aponte em `photo: "/<nome>/arquivo.webp"`. Produto sem `photo` aparece só com texto.
+4. Importe o arquivo em `src/clientes/index.ts` e adicione na lista `restaurants`.
+
+O nome de `category` em cada produto precisa ser igual a um `name` em `categories`. Se não for, o produto não aparece.
+
+Horários: `days` usa 0 = domingo … 6 = sábado. Se `close` for menor que `open` (ex.: 18:00 às 00:30), o sistema entende que fecha depois da meia-noite. O "Aberto agora" usa o relógio do celular do cliente.
 
 ## Executar
 
@@ -12,26 +39,8 @@ npm ci
 npm run dev
 ```
 
-```sh
-npm run build
-npm run preview
-```
-
 ## Publicar na Vercel
 
-Importe este repositório e mantenha a pasta raiz como diretório do projeto.
-O arquivo `vercel.json` configura Vite, comando `npm run build` e saída `dist`.
-Não há variáveis de ambiente obrigatórias.
+Importe o repositório com a pasta raiz como diretório do projeto. O `vercel.json` configura o build e redireciona todos os caminhos para o app, então `/pizzaria` e `/<cliente>` funcionam direto.
 
-Todos os arquivos de imagem ficam em `public/` e usam caminhos do próprio site.
-Funcionam no endereço `.vercel.app` e no domínio próprio conectado ao projeto.
-As fontes Manrope e Bebas Neue são carregadas pelo Google Fonts.
-
-## Personalizar
-
-- Produtos, preços e textos: `src/BurgerDemo.tsx`.
-- Estilo e regras mobile: `src/burger-demo.css`.
-- Imagens locais: `public/brasa-*.webp`.
-- Título e descrição da página: `index.html`.
-
-As fotografias ilustrativas foram geradas para esta demonstração e otimizadas para WebP.
+As fotos da demo de hamburgueria foram geradas para demonstração. Em cardápios de clientes, use fotos reais dos produtos.
