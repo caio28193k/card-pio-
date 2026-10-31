@@ -14,7 +14,15 @@ Cada restaurante é um arquivo de dados.
 | `/pizzaria` | Demo Lenha 21 (pizzaria, lista compacta, sem fotos) |
 | `/mesa` | Demo Brasa 47 só de consulta (salão / QR code), sem carrinho |
 
-Qualquer caminho desconhecido abre a demo da hamburgueria.
+Qualquer caminho desconhecido abre a demo da hamburgueria. O que vem depois do primeiro trecho é ignorado na exibição: `/pizzaria/qualquer-coisa` abre a pizzaria.
+
+## Medir quem abriu (link por lead)
+
+Mande um link diferente para cada lead, por exemplo `/pizzaria/donna` ou `/mesa/spartakus`. As visitas aparecem por caminho no **Vercel Web Analytics** (painel do projeto → Analytics → Pages). A prévia do link no WhatsApp não conta como visita, porque não executa JavaScript.
+
+O Web Analytics precisa estar ativado no painel da Vercel (aba Analytics → Enable).
+
+Para os seus próprios testes não contarem, abra qualquer página uma vez com `?ignorar` no fim do endereço (ex.: `/pizzaria?ignorar`). O aparelho fica marcado. Para voltar a contar, use `?contar`.
 
 ## Criar o cardápio de um cliente
 
