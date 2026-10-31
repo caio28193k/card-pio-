@@ -1,12 +1,15 @@
 import { useEffect, useMemo, useState, type CSSProperties } from "react";
-import { Bike, Clock, CreditCard, Flame, MapPin, MessageCircle, Pizza, Search, Utensils, X } from "lucide-react";
+import { Bike, Clock, CreditCard, Flame, MapPin, MessageCircle, Pizza, Plus, Search, ShoppingBag, Utensils, X } from "lucide-react";
+import { buildOrderMessage, emptyCustomer, money, resolveLine, useStored, type CartLine, type Customer, type ResolvedLine } from "./cart";
+import { CartSheet } from "./CartSheet";
 import { hoursLines, isOpenAt, todayLabel } from "./hours";
+import { ItemSheet } from "./ItemSheet";
+import { Price } from "./Price";
 import type { Product, Restaurant } from "./types";
 
 const ALL = "Todos";
-const currency = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
-const money = (cents: number) => currency.format(cents / 100);
 const normalize = (text: string) => text.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+const slugify = (text: string) => normalize(text).replace(/[^a-z0-9]+/g, "-");
 
 function InstagramIcon({ size = 18 }: { size?: number }) {
   return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" aria-hidden="true"><rect x="2.5" y="2.5" width="19" height="19" rx="5.5" /><circle cx="12" cy="12" r="4.2" /><circle cx="17.6" cy="6.4" r="1.1" fill="currentColor" stroke="none" /></svg>;
@@ -24,9 +27,9 @@ function Logo({ restaurant }: { restaurant: Restaurant }) {
   </a>;
 }
 
-function Price({ price }: { price: Product["price"] }) {
-  if (typeof price === "number") return <strong className="cdp-price">{money(price)}</strong>;
-  return <ul className="cdp-sizes">{price.map((size) => <li key={size.label}><span>{size.label}</span><strong>{money(size.price)}</strong></li>)}</ul>;
+/** Mostra o texto do WhatsApp com *negrito*. */
+function WhatsappText({ text }: { text: string }) {
+  return <>{text.split("\n").map((line, i) => <p key={i}>{line.split(/\*(.+?)\*/g).map((part, j) => (j % 2 ? <strong key={j}>{part}</strong> : part))}{!line && " "}</p>)}</>;
 }
 
 function setMeta(name: string, content: string) {
@@ -39,8 +42,19 @@ export function Cardapio({ restaurant: r }: { restaurant: Restaurant }) {
   const [category, setCategory] = useState(ALL);
   const [query, setQuery] = useState("");
   const [now, setNow] = useState(() => new Date());
-  const [zoom, setZoom] = useState<Product | null>(null);
-  const [toast, setToast] = useState(false);
+  const [detail, setDetail] = useState<Product | null>(null);
+  const [cartOpen, setCartOpen] = useState(false);
+  const [preview, setPreview] = useState<string | null>(null);
+  const [sent, setSent] = useState(false);
+  const [toast, setToast] = useState<string | null>(null);
+  const [cart, setCart] = useStored<CartLine[]>(`cdp-carrinho:${r.slug}`, []);
+  const [customer, setCustomer] = useStored<Customer>(`cdp-cliente:${r.slug}`, emptyCustomer);
+
+  const ordering = r.ordering;
+  const items = useMemo(() => (ordering ? cart.map((line) => resolveLine(r, line)).filter((item): item is ResolvedLine => item !== null) : []), [r, ordering, cart]);
+  const count = items.reduce((sum, item) => sum + item.line.qty, 0);
+  const subtotal = items.reduce((sum, item) => sum + item.total, 0);
+  const modalOpen = Boolean(detail || cartOpen || preview);
 
   useEffect(() => {
     const timer = window.setInterval(() => setNow(new Date()), 60_000);
@@ -54,15 +68,20 @@ export function Cardapio({ restaurant: r }: { restaurant: Restaurant }) {
   }, [r]);
 
   useEffect(() => {
-    if (!zoom) return;
-    const onKey = (event: KeyboardEvent) => { if (event.key === "Escape") setZoom(null); };
+    if (!modalOpen) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      if (preview) setPreview(null); else if (cartOpen) setCartOpen(false); else setDetail(null);
+    };
     window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [zoom]);
+    return () => { document.body.style.overflow = previous; window.removeEventListener("keydown", onKey); };
+  }, [modalOpen, preview, cartOpen]);
 
   useEffect(() => {
     if (!toast) return;
-    const timer = window.setTimeout(() => setToast(false), 3500);
+    const timer = window.setTimeout(() => setToast(null), 3000);
     return () => window.clearTimeout(timer);
   }, [toast]);
 
@@ -79,12 +98,35 @@ export function Cardapio({ restaurant: r }: { restaurant: Restaurant }) {
   const whatsappHref = r.whatsapp ? `https://wa.me/${r.whatsapp}?text=${encodeURIComponent(r.whatsappMessage ?? "Olá! Vi o cardápio e quero fazer um pedido.")}` : undefined;
   const mapsHref = r.address ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${r.name} ${r.address}`)}` : undefined;
   const style = { "--accent": r.theme.accent, "--accent-ink": r.theme.accentInk } as CSSProperties;
+  const photos = r.layout === "fotos";
 
   const pickCategory = (name: string) => {
     setCategory(name);
     setQuery("");
     document.getElementById("cardapio")?.scrollIntoView({ block: "start" });
   };
+
+  const addLine = (line: CartLine) => {
+    if (sent) setSent(false);
+    setCart((current) => [...current, line]);
+    setDetail(null);
+    setToast("Adicionado ao pedido");
+  };
+
+  const setQty = (key: string, qty: number) =>
+    setCart((current) => (qty <= 0 ? current.filter((l) => l.key !== key) : current.map((l) => (l.key === key ? { ...l, qty: Math.min(30, qty) } : l))));
+
+  const sendOrder = () => {
+    if (!ordering) return;
+    const message = buildOrderMessage(r, items, customer, ordering.deliveryFee);
+    setSent(true);
+    if (r.whatsapp) window.location.href = `https://wa.me/${r.whatsapp}?text=${encodeURIComponent(message)}`;
+    else { setCartOpen(false); setPreview(message); }
+  };
+
+  const resetOrder = () => { setCart([]); setSent(false); setCartOpen(false); setPreview(null); };
+
+  const addButton = (p: Product) => ordering && <button type="button" className="cdp-add" onClick={(event) => { event.stopPropagation(); setDetail(p); }} aria-label={`Adicionar ${p.name}`}><Plus size={16} /> Adicionar</button>;
 
   return <div className="cdp" style={style}>
     {r.demo && <div className="cdp-strip"><span className="cdp-dot" /> Cardápio de demonstração <span className="cdp-strip-detail">· marca, fotos e preços ilustrativos</span></div>}
@@ -104,6 +146,7 @@ export function Cardapio({ restaurant: r }: { restaurant: Restaurant }) {
         <ul className="cdp-hero-info">
           {r.hours?.length ? <li><Clock size={15} /> {todayLabel(r.hours, now)}</li> : null}
           {r.address && <li><MapPin size={15} /> {r.address}</li>}
+          {ordering && <li><Bike size={15} /> Entrega {money(ordering.deliveryFee)}</li>}
         </ul>
       </div>
     </section>
@@ -122,24 +165,40 @@ export function Cardapio({ restaurant: r }: { restaurant: Restaurant }) {
 
       {groups.length === 0
         ? <div className="cdp-empty"><Search size={26} /><h3>Nada encontrado</h3><p>Tente outra palavra ou veja o cardápio completo.</p><button type="button" onClick={() => pickCategory(ALL)}>Ver tudo</button></div>
-        : groups.map(({ category: c, items }) => <section className="cdp-group" key={c.name} aria-labelledby={`cat-${normalize(c.name).replace(/[^a-z0-9]+/g, "-")}`}>
+        : groups.map(({ category: c, items: products }) => <section className="cdp-group" key={c.name} aria-labelledby={`cat-${slugify(c.name)}`}>
           <div className="cdp-group-head">
-            <h2 id={`cat-${normalize(c.name).replace(/[^a-z0-9]+/g, "-")}`}>{c.name}</h2>
+            <h2 id={`cat-${slugify(c.name)}`}>{c.name}</h2>
             {c.note && <p>{c.note}</p>}
           </div>
-          <div className="cdp-items">
-            {items.map((p) => <article className="cdp-item" key={p.id}>
-              <div className="cdp-item-text">
-                {p.badge && <span className="cdp-badge">{p.badge}</span>}
-                <h3>{p.name}</h3>
-                {p.description && <p>{p.description}</p>}
-                <Price price={p.price} />
-              </div>
-              {p.photo && <button type="button" className="cdp-item-photo" onClick={() => setZoom(p)} aria-label={`Ampliar foto de ${p.name}`}>
-                <img src={p.photo} alt="" width={512} height={512} loading="lazy" decoding="async" />
-              </button>}
-            </article>)}
-          </div>
+          {photos
+            ? <div className="cdp-cards">
+              {products.map((p) => <article className="cdp-card-item" key={p.id} onClick={() => setDetail(p)}>
+                {p.photo && <button type="button" className="cdp-card-media" onClick={(event) => { event.stopPropagation(); setDetail(p); }} aria-label={`Ver ${p.name}`}>
+                  <img src={p.photo} alt="" width={512} height={512} loading="lazy" decoding="async" />
+                  {p.badge && <span className="cdp-badge">{p.badge}</span>}
+                </button>}
+                <div className="cdp-card-body">
+                  {!p.photo && p.badge && <span className="cdp-badge">{p.badge}</span>}
+                  <h3>{p.name}</h3>
+                  {p.description && <p>{p.description}</p>}
+                  <div className="cdp-card-foot"><Price price={p.price} />{addButton(p)}</div>
+                </div>
+              </article>)}
+            </div>
+            : <div className="cdp-items">
+              {products.map((p) => <article className="cdp-item" key={p.id} onClick={() => setDetail(p)}>
+                <div className="cdp-item-text">
+                  {p.badge && <span className="cdp-badge">{p.badge}</span>}
+                  <h3>{p.name}</h3>
+                  {p.description && <p>{p.description}</p>}
+                  <Price price={p.price} />
+                  {addButton(p)}
+                </div>
+                {p.photo && <button type="button" className="cdp-item-photo" onClick={(event) => { event.stopPropagation(); setDetail(p); }} aria-label={`Ver ${p.name}`}>
+                  <img src={p.photo} alt="" width={512} height={512} loading="lazy" decoding="async" />
+                </button>}
+              </article>)}
+            </div>}
         </section>)}
     </main>
 
@@ -148,7 +207,7 @@ export function Cardapio({ restaurant: r }: { restaurant: Restaurant }) {
       <div className="cdp-info-grid">
         {r.hours?.length ? <div className="cdp-card"><h3><Clock size={17} /> Horário</h3>{hoursLines(r.hours).map((line) => <p key={line}>{line}</p>)}</div> : null}
         {r.address && <div className="cdp-card"><h3><MapPin size={17} /> Endereço</h3><p>{r.address}</p>{!r.demo && <a href={mapsHref} target="_blank" rel="noreferrer">Ver no mapa</a>}</div>}
-        {r.delivery && <div className="cdp-card"><h3><Bike size={17} /> Entrega</h3><p>{r.delivery}</p></div>}
+        {(r.delivery || ordering) && <div className="cdp-card"><h3><Bike size={17} /> Entrega</h3>{ordering && <p>Taxa de entrega: {money(ordering.deliveryFee)}{ordering.pickup ? " · Retirada grátis" : ""}</p>}{r.delivery && <p>{r.delivery}</p>}</div>}
         {r.payments?.length ? <div className="cdp-card"><h3><CreditCard size={17} /> Pagamento</h3><ul className="cdp-chips">{r.payments.map((p) => <li key={p}>{p}</li>)}</ul></div> : null}
         {r.instagram && <div className="cdp-card"><h3><InstagramIcon size={17} /> Instagram</h3>{r.demo ? <p>@{r.instagram}</p> : <a href={`https://instagram.com/${r.instagram}`} target="_blank" rel="noreferrer">@{r.instagram}</a>}</div>}
       </div>
@@ -159,18 +218,32 @@ export function Cardapio({ restaurant: r }: { restaurant: Restaurant }) {
       <p>© {now.getFullYear()} {r.name}{r.demo && " · Marca, fotos, preços e endereço ilustrativos. Exemplo de cardápio digital para restaurantes."}</p>
     </div></footer>
 
-    {whatsappHref
-      ? <a className="cdp-wa" href={whatsappHref} target="_blank" rel="noreferrer"><MessageCircle size={20} /> Pedir no WhatsApp</a>
-      : <button type="button" className="cdp-wa" onClick={() => setToast(true)}><MessageCircle size={20} /> Pedir no WhatsApp</button>}
+    {ordering && count > 0
+      ? <button type="button" className="cdp-wa cdp-cartbar" onClick={() => setCartOpen(true)}>
+        <span className="cdp-cartbar-count"><ShoppingBag size={18} /> {count}</span>
+        <span>Ver pedido</span>
+        <strong>{money(subtotal)}</strong>
+      </button>
+      : whatsappHref
+        ? <a className="cdp-wa" href={whatsappHref} target="_blank" rel="noreferrer"><MessageCircle size={20} /> {ordering ? "Falar no WhatsApp" : "Pedir no WhatsApp"}</a>
+        : <button type="button" className="cdp-wa" onClick={() => setToast(ordering ? "Adicione itens para montar o pedido. No cardápio de verdade, este botão abre o WhatsApp do restaurante." : "No cardápio de verdade, este botão abre o WhatsApp do restaurante com a mensagem pronta.")}><MessageCircle size={20} /> {ordering ? "Falar no WhatsApp" : "Pedir no WhatsApp"}</button>}
 
-    {toast && <div className="cdp-toast" role="status">No cardápio de verdade, este botão abre o WhatsApp do restaurante com a mensagem pronta.</div>}
+    {toast && <div className="cdp-toast" role="status">{toast}</div>}
 
-    {zoom && <div className="cdp-zoom" role="dialog" aria-modal="true" aria-label={zoom.name} onClick={() => setZoom(null)}>
-      <figure onClick={(event) => event.stopPropagation()}>
-        <button type="button" className="cdp-zoom-close" onClick={() => setZoom(null)} aria-label="Fechar"><X size={22} /></button>
-        <img src={zoom.photo} alt={`Foto de ${zoom.name}`} />
-        <figcaption><strong>{zoom.name}</strong>{zoom.description && <span>{zoom.description}</span>}<Price price={zoom.price} /></figcaption>
-      </figure>
+    {detail && <ItemSheet key={detail.id} restaurant={r} product={detail} onClose={() => setDetail(null)} onAdd={ordering ? addLine : undefined} />}
+
+    {cartOpen && ordering && <CartSheet restaurant={r} items={items} open={open} customer={customer} setCustomer={setCustomer} setQty={setQty} onClose={() => setCartOpen(false)} onSend={sendOrder} sent={sent} onReset={resetOrder} />}
+
+    {preview && <div className="cdp-modal" role="dialog" aria-modal="true" aria-labelledby="cdp-preview-title" onClick={() => setPreview(null)}>
+      <div className="cdp-sheet" onClick={(event) => event.stopPropagation()}>
+        <div className="cdp-sheet-top"><span className="cdp-grip" aria-hidden="true" /><button type="button" className="cdp-sheet-close" onClick={() => setPreview(null)} aria-label="Fechar"><X size={22} /></button></div>
+        <div className="cdp-sheet-body"><div className="cdp-sheet-pad">
+          <h2 id="cdp-preview-title">Assim o pedido chega no WhatsApp</h2>
+          <p className="cdp-muted">Na demonstração, mostramos a mensagem aqui. No cardápio de verdade, o WhatsApp do restaurante abre com este texto pronto para enviar.</p>
+          <div className="cdp-bubble"><WhatsappText text={preview} /></div>
+        </div></div>
+        <div className="cdp-sheet-foot"><button type="button" className="cdp-primary is-wide" onClick={resetOrder}>Começar um novo pedido</button></div>
+      </div>
     </div>}
   </div>;
 }

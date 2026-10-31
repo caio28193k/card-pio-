@@ -1,4 +1,4 @@
-import type { Restaurant, Size } from "../types";
+import type { AddonGroup, Restaurant, Size } from "../types";
 
 const sizes = (broto: number, media: number, grande: number): Size[] => [
   { label: "Broto", price: broto },
@@ -7,6 +7,26 @@ const sizes = (broto: number, media: number, grande: number): Size[] => [
 ];
 
 const tradicional = sizes(3990, 5490, 6490);
+
+const bordas: AddonGroup = {
+  id: "borda",
+  name: "Borda recheada",
+  single: true,
+  options: [
+    { id: "requeijao", name: "Requeijão", price: 1000 },
+    { id: "cheddar", name: "Cheddar", price: 1000 },
+  ],
+};
+
+const adicionais: AddonGroup = {
+  id: "adicionais",
+  name: "Adicionais",
+  options: [
+    { id: "bacon", name: "Bacon", price: 800 },
+    { id: "queijo", name: "Queijo extra", price: 800 },
+    { id: "cebola", name: "Cebola caramelizada", price: 600 },
+  ],
+};
 const especial = sizes(4590, 6290, 7490);
 
 const lenha21: Restaurant = {
@@ -15,6 +35,7 @@ const lenha21: Restaurant = {
   logo: { text: "LENHA", highlight: "21", icon: "pizza" },
   kicker: "Pizzaria no forno a lenha",
   tagline: "Massa de fermentação lenta, borda alta e muito recheio.",
+  layout: "lista",
   theme: { accent: "#ff6b3d", accentInk: "#160803" },
   whatsapp: "",
   whatsappMessage: "Olá! Vi o cardápio e quero fazer um pedido.",
@@ -25,14 +46,14 @@ const lenha21: Restaurant = {
     { days: [6, 0], open: "18:00", close: "00:30" },
   ],
   payments: ["Pix", "Crédito", "Débito", "Dinheiro", "VR/VA"],
-  delivery: "Entrega e retirada. Taxa conforme o bairro.",
+  delivery: "Entrega na região. Retirada no balcão.",
+  ordering: { deliveryFee: 700, pickup: true, payments: ["Pix", "Cartão na entrega", "Dinheiro"] },
   description: "Cardápio de demonstração Lenha 21. Pizzas tradicionais, especiais, doces, bordas e bebidas com tamanhos e preços.",
   demo: true,
   categories: [
-    { name: "Tradicionais", note: "Broto 4 fatias · Média 6 fatias · Grande 8 fatias. Meio a meio: vale o preço do sabor mais caro." },
-    { name: "Especiais", note: "Broto 4 fatias · Média 6 fatias · Grande 8 fatias." },
-    { name: "Doces", note: "Broto 4 fatias · Média 6 fatias." },
-    { name: "Bordas recheadas", note: "Valor adicional por pizza." },
+    { name: "Tradicionais", note: "Broto 4 fatias · Média 6 fatias · Grande 8 fatias. Meio a meio: vale o preço do sabor mais caro.", halfAndHalf: "salgadas", addonGroups: [bordas, adicionais] },
+    { name: "Especiais", note: "Broto 4 fatias · Média 6 fatias · Grande 8 fatias. Pode combinar com as tradicionais.", halfAndHalf: "salgadas", addonGroups: [bordas, adicionais] },
+    { name: "Doces", note: "Broto 4 fatias · Média 6 fatias.", halfAndHalf: "doces", addonGroups: [{ id: "borda", name: "Borda recheada", single: true, options: [{ id: "chocolate", name: "Chocolate", price: 1200 }] }] },
     { name: "Bebidas" },
   ],
   products: [
@@ -48,9 +69,6 @@ const lenha21: Restaurant = {
     { id: "da-casa", name: "Lenha 21", category: "Especiais", description: "Mussarela de búfala, tomate-cereja, rúcula e parmesão.", price: especial, badge: "Da casa" },
     { id: "brigadeiro", name: "Brigadeiro", category: "Doces", description: "Chocolate ao leite e granulado.", price: [{ label: "Broto", price: 3690 }, { label: "Média", price: 4990 }] },
     { id: "romeu-julieta", name: "Romeu e Julieta", category: "Doces", description: "Mussarela e goiabada cremosa.", price: [{ label: "Broto", price: 3690 }, { label: "Média", price: 4990 }] },
-    { id: "borda-catupiry", name: "Borda de requeijão", category: "Bordas recheadas", price: 1000 },
-    { id: "borda-cheddar", name: "Borda de cheddar", category: "Bordas recheadas", price: 1000 },
-    { id: "borda-chocolate", name: "Borda de chocolate", category: "Bordas recheadas", price: 1200 },
     { id: "refri-2l", name: "Refrigerante 2 L", category: "Bebidas", description: "Consulte os sabores disponíveis.", price: 1400 },
     { id: "refri-lata", name: "Refrigerante lata", category: "Bebidas", description: "350 ml.", price: 700 },
     { id: "suco", name: "Suco natural", category: "Bebidas", description: "Laranja, limão ou maracujá. 500 ml.", price: 1100 },
