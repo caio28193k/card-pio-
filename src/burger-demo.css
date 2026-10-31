@@ -1,12 +1,12 @@
 @import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap");
 
-.burger-demo{--bd-bg:#000;--bd-surface:#000;--bd-raised:#0a0a0a;--bd-ink:#f7f3ec;--bd-muted:#c1b8aa;--bd-gold:#f5b83f;--bd-line:#242424;background:var(--bd-bg);color:var(--bd-ink);font-family:Manrope,Arial,sans-serif;min-height:100vh}
+.burger-demo{--bd-bg:#000;--bd-surface:#000;--bd-raised:#0a0a0a;--bd-ink:#f7f3ec;--bd-muted:#c1b8aa;--bd-gold:#ffc400;--bd-line:#242424;background:var(--bd-bg);color:var(--bd-ink);font-family:Manrope,Arial,sans-serif;min-height:100vh}
 .burger-demo *{box-sizing:border-box}
 .burger-demo :is(button,input,textarea){font:inherit}
 .burger-demo button{cursor:pointer}
 .burger-demo :is(button,a){-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 .burger-demo :is(button,a):focus-visible{outline:3px solid var(--bd-gold);outline-offset:4px}
-.burger-demo ::selection{background:var(--bd-gold);color:#17120a}
+.burger-demo ::selection{background:var(--bd-gold);color:#000}
 .burger-container{width:min(100% - 48px,1200px);margin-inline:auto}
 .burger-demo-strip{display:flex;align-items:center;justify-content:center;gap:8px;padding:7px 12px;min-height:30px;background:var(--bd-bg);color:#e9dfce;font-size:11px;line-height:1.4}
 .burger-demo-dot{width:6px;height:6px;flex:none;border-radius:50%;background:var(--bd-gold)}
@@ -14,33 +14,33 @@
 .burger-header-inner{height:100%;display:flex;align-items:center;justify-content:space-between;gap:30px}
 .burger-logo{min-height:44px;display:inline-flex;align-items:center;gap:10px;font:29px "Bebas Neue",Impact,sans-serif;letter-spacing:.055em;color:#fff;white-space:nowrap}
 .burger-logo b{font-weight:400;color:var(--bd-gold)}
-.burger-logo-icon{width:36px;height:36px;display:grid;place-items:center;border-radius:50%;background:var(--bd-gold);color:#14120e}
+.burger-logo-icon{width:36px;height:36px;display:grid;place-items:center;border-radius:50%;background:var(--bd-gold);color:#000}
 .burger-nav{display:flex;align-items:center;gap:34px;margin-left:auto}
 .burger-nav a{min-height:44px;display:flex;align-items:center;color:#e5e0d8;font-size:13px;font-weight:700}
 .burger-nav a:hover{color:var(--bd-gold)}
 .burger-header-actions{display:flex;align-items:center;gap:10px}
-.burger-menu-link{min-height:44px;display:flex;align-items:center;justify-content:center;gap:9px;border-radius:999px;background:var(--bd-gold);color:#221805;padding:0 17px;font-size:12px;font-weight:800;text-transform:uppercase;white-space:nowrap}
+.burger-menu-link{min-height:44px;display:flex;align-items:center;justify-content:center;gap:9px;border-radius:999px;background:var(--bd-gold);color:#000;padding:0 17px;font-size:12px;font-weight:800;text-transform:uppercase;white-space:nowrap}
 .burger-mobile-toggle{display:none;align-items:center;justify-content:center;width:44px;height:44px;flex:none;border:0;background:transparent;color:#fff}
 .burger-hero{position:relative;min-height:650px;display:flex;align-items:center;overflow:hidden;background:var(--bd-bg);color:#fff}
 .burger-hero-image,.burger-hero-shade{position:absolute;inset:0}
 .burger-hero-image{background:url("/brasa-hero.webp") center/cover no-repeat}
 .burger-hero-shade{background:linear-gradient(90deg,#000e 0%,#000b 37%,#0001 78%),linear-gradient(0deg,#000,transparent 45%)}
 .burger-hero-content{position:relative;padding-block:100px 110px}
-.burger-kicker{display:inline-flex;align-items:center;gap:9px;border:1px solid #d4a74170;border-radius:999px;padding:9px 15px;color:var(--bd-gold);font-size:11px;font-weight:800;letter-spacing:.2em}
+.burger-kicker{display:inline-flex;align-items:center;gap:9px;border:1px solid #ffc40070;border-radius:999px;padding:9px 15px;color:var(--bd-gold);font-size:11px;font-weight:800;letter-spacing:.2em}
 .burger-hero h1,.burger-section-heading h2,.burger-how h2{font-family:"Bebas Neue",Impact,sans-serif;font-weight:400;line-height:.98;letter-spacing:.01em}
 .burger-hero h1{font-size:clamp(82px,9.5vw,132px);max-width:610px;margin:26px 0 17px}
 .burger-hero h1 em,.burger-how h2 em,.burger-section-heading h2 em{font-style:normal;color:var(--bd-gold)}
 .burger-hero p{font-size:18px;line-height:1.65;color:#e4dcd1;max-width:410px;margin:0}
 .burger-hero-actions{display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin-top:30px}
 .burger-btn{min-height:54px;padding:0 23px;display:inline-flex;align-items:center;justify-content:center;gap:12px;border-radius:10px;font-size:12px;font-weight:800;letter-spacing:.06em}
-.burger-btn-gold{background:var(--bd-gold);color:#1e170d;transition:background .2s}
-.burger-btn-gold:hover,.burger-menu-link:hover{background:#ffd274}
+.burger-btn-gold{background:var(--bd-gold);color:#000;transition:background .2s}
+.burger-btn-gold:hover,.burger-menu-link:hover{background:#ffd633}
 .burger-hero-secondary{display:inline-flex;align-items:center;gap:8px;min-height:48px;padding:0 7px;font-size:12px;font-weight:700;color:#e8dfd0}
 .burger-hero-proof{display:flex;flex-wrap:wrap;gap:12px 22px;border-top:1px solid #ffffff24;padding-top:22px;margin-top:39px;max-width:475px;color:#d8d0c4;font-size:11px;font-weight:700}
 .burger-hero-proof span{display:flex;align-items:center;gap:6px}
 .burger-hero-proof svg{color:var(--bd-gold)}
 .burger-hero-caption{position:absolute;right:max(28px,calc((100vw - 1200px)/2));bottom:33px;text-align:right}
-.burger-hero-caption span{display:block;font-size:9px;font-weight:800;letter-spacing:.2em;color:#ebc587}
+.burger-hero-caption span{display:block;font-size:9px;font-weight:800;letter-spacing:.2em;color:var(--bd-gold)}
 .burger-hero-caption strong{display:block;margin-top:5px;font:26px "Bebas Neue",Impact,sans-serif;letter-spacing:.04em}
 #cardapio,#mais-pedidos,#sobre{scroll-margin-top:95px}
 .burger-menu-section{padding-block:78px 85px}
@@ -52,7 +52,7 @@
 .burger-mini-note{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--bd-muted);white-space:nowrap;padding-bottom:5px}
 .burger-discovery{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-top:30px}
 .burger-search{display:flex;align-items:center;gap:12px;width:min(100%,540px);height:52px;padding-inline:15px;border:1px solid #3d3d3d;border-radius:9px;background:var(--bd-surface);color:var(--bd-muted)}
-.burger-search:focus-within{border-color:var(--bd-gold);box-shadow:0 0 0 3px #f5b83f30}
+.burger-search:focus-within{border-color:var(--bd-gold);box-shadow:0 0 0 3px #ffc40030}
 .burger-search input{flex:1;min-width:0;width:100%;height:100%;border:0;outline:0;background:transparent;color:var(--bd-ink);caret-color:var(--bd-gold);font-size:16px}
 .burger-search input::placeholder{color:#b4ab9e;opacity:1}
 .burger-search button{width:44px;height:44px;flex:none;border:0;background:transparent;display:grid;place-items:center;color:var(--bd-muted)}
@@ -60,29 +60,29 @@
 .burger-categories{position:sticky;top:76px;z-index:20;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin-top:5px;padding-block:13px;background:var(--bd-bg)}
 .burger-categories::-webkit-scrollbar{display:none}
 .burger-categories button{flex:none;min-height:44px;border:1px solid #3d3d3d;border-radius:999px;padding-inline:19px;background:var(--bd-surface);color:#d9d1c5;font-size:13px;font-weight:800;white-space:nowrap;transition:background .2s,border-color .2s,color .2s}
-.burger-categories button:hover{background:var(--bd-raised);border-color:#8b744f}
-.burger-categories button.selected{background:var(--bd-gold);color:#221805;border-color:var(--bd-gold)}
+.burger-categories button:hover{background:var(--bd-raised);border-color:var(--bd-gold)}
+.burger-categories button.selected{background:var(--bd-gold);color:#000;border-color:var(--bd-gold)}
 .burger-products{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:36px 26px;margin-top:20px}
 .burger-product{min-width:0;overflow:hidden;background:var(--bd-surface);border:1px solid var(--bd-line);border-radius:15px;display:flex;flex-direction:column;box-shadow:0 10px 30px #0002}
 .burger-product-media{position:relative;overflow:hidden;aspect-ratio:4/3;background:var(--bd-bg)}
 .burger-product-photo{display:block;width:100%;height:100%;object-fit:cover;object-position:center}
-.burger-product-badge{position:absolute;left:16px;top:16px;border-radius:999px;padding:7px 11px;background:#f8c76b;color:#382609;font-size:10px;font-weight:800;box-shadow:0 2px 12px #0002}
+.burger-product-badge{position:absolute;left:16px;top:16px;border-radius:999px;padding:7px 11px;background:var(--bd-gold);color:#000;font-size:10px;font-weight:800;box-shadow:0 2px 12px #0002}
 .burger-product-content{display:flex;flex-direction:column;flex:1;padding:23px 24px 25px}
-.burger-product-category{color:#e3be7b;font-size:10px;font-weight:800;letter-spacing:.15em;text-transform:uppercase}
+.burger-product-category{color:var(--bd-gold);font-size:10px;font-weight:800;letter-spacing:.15em;text-transform:uppercase}
 .burger-product h3{font-size:23px;line-height:1.25;letter-spacing:-.04em;margin:10px 0}
 .burger-product p{font-size:15px;line-height:1.65;color:var(--bd-muted);margin:0 0 22px;flex:1}
 .burger-product-price{display:block;margin-top:auto;color:var(--bd-gold);font-size:25px;font-weight:800;letter-spacing:-.035em}
 .burger-empty{margin-top:25px;padding:60px 20px;text-align:center;background:var(--bd-surface);border:1px dashed #3d3d3d;border-radius:14px;color:var(--bd-muted)}
 .burger-empty h3{color:var(--bd-ink);margin:10px 0 4px}
-.burger-empty button{min-height:44px;border:0;border-radius:8px;padding:10px 18px;background:var(--bd-gold);color:#221805;font-weight:800}
+.burger-empty button{min-height:44px;border:0;border-radius:8px;padding:10px 18px;background:var(--bd-gold);color:#000;font-weight:800}
 .burger-combo-section{background:var(--bd-bg);padding:38px 0 80px;border-block:1px solid var(--bd-line)}
 .burger-combo-panel{display:grid;grid-template-columns:1fr 1fr;overflow:hidden;border:1px solid var(--bd-line);border-radius:22px;background:var(--bd-surface);color:var(--bd-ink)}
 .burger-combo-visual{position:relative;min-height:430px}
 .burger-combo-visual>.burger-product-photo{position:absolute;inset:0}
-.burger-combo-stamp{position:absolute;top:24px;left:24px;width:104px;height:104px;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:50%;background:var(--bd-gold);color:#271b08;font-size:11px;font-weight:800;line-height:.8;transform:rotate(-12deg);box-shadow:0 8px 20px #0002}
+.burger-combo-stamp{position:absolute;top:24px;left:24px;width:104px;height:104px;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:50%;background:var(--bd-gold);color:#000;font-size:11px;font-weight:800;line-height:.8;transform:rotate(-12deg);box-shadow:0 8px 20px #0002}
 .burger-combo-stamp b{font-size:14px}
 .burger-combo-copy{align-self:center;padding:clamp(28px,4vw,58px)}
-.burger-combo-copy .burger-eyebrow{color:#efc16e}
+.burger-combo-copy .burger-eyebrow{color:var(--bd-gold)}
 .burger-combo-copy h2{font:400 clamp(44px,5vw,70px)/.98 "Bebas Neue",Impact,sans-serif;margin:17px 0 16px}
 .burger-combo-copy h2 em{font-style:normal;color:var(--bd-gold)}
 .burger-combo-copy>p{font-size:15px;line-height:1.7;color:#cec4b4;max-width:380px}
@@ -93,7 +93,7 @@
 .burger-how{display:grid;grid-template-columns:1fr 1.4fr;gap:60px;padding-block:85px 95px}
 .burger-how h2{max-width:430px}
 .burger-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;align-items:start}
-.burger-steps>div{border-top:2px solid #d5a13f;padding-top:22px}
+.burger-steps>div{border-top:2px solid var(--bd-gold);padding-top:22px}
 .burger-steps span{font:36px "Bebas Neue",Impact,sans-serif;color:var(--bd-gold)}
 .burger-steps h3{font-size:16px;margin:8px 0 5px}
 .burger-steps p{font-size:14px;line-height:1.7;color:var(--bd-muted);margin:0}
